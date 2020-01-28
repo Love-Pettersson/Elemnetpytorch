@@ -7,9 +7,7 @@ Created on Wed Jan 22 14:18:33 2020
 
 import torch
 import torch.nn as nn
-import torchvision
-import torchvision.transforms as transforms
-from torch.autograd import Variable
+
 
 
 #Different sizes
@@ -76,3 +74,7 @@ class Network(nn.Module):
         out=self.layer4(out)
         out=self.lastlayer(out)
         return out
+    
+
+
+
