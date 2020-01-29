@@ -71,7 +71,6 @@ optimizer=torch.optim.Adam(model.parameters(), lr=args.learningrate)
 
 "Defining variables for the training loop"
 best_test_error=100
-patience=200
 best_step=0
 step=0
 patience_steps = int(args.patience * len(X_train)/(args.batch_size))
@@ -88,7 +87,7 @@ def test(epoch):
             output=model(inputs)
             test_loss +=Testloss(output,labels)
             k +=1
-            
+    model.train()        
     return test_loss/k 
 
 "Create training function"
@@ -118,10 +117,8 @@ def train(epoch):
                 torch.save(model.state_dict(),'checkpoint.pth')
                 print('Model saved at: {}'.format('checkpoint.pth'))
             
-            print('Train Epoch:{}[{}/{} ({:.0f}%)] Minibatch Loss:{}'.format(epoch,
-                  batch_idx*len(inputs),len(Trainset_loader.dataset),
-                  100. * batch_idx / len(Trainset_loader),loss.item()))
-            print('Test set loss: {:.4f} Best test loss:{}'.format(test(epoch),best_test_error))
+            print('Train Epoch:{} Minibatch Loss:{}'.format(epoch,loss.item()))
+            print('Test set loss: {} Best test loss:{}'.format(test(epoch),best_test_error))
             
 "Create training loop"
 epoch=1
