@@ -11,11 +11,13 @@ from collections import OrderedDict, defaultdict
 import collections
 from torch.utils import data
 
+"Get the data"
 test_data = open('test_set.txt').read().splitlines()#load data
 del test_data[0] #remove the name compostion and delta_e
 train_data=open('train_set.txt').read().splitlines()
 del train_data[0]
 
+"For processing the data"
 def Get_data(Data_input):
     
     Middle_step1=[] #middlestep1
@@ -53,21 +55,21 @@ def Get_data(Data_input):
 
 
 
-# Code to insert the numerical value for each element for each input at the right location
+# Code to assign the numerical value at the right element index for every compound/input
     formulare = re.compile(r'([A-Z][a-z]*)(\d*)')
-    def parse_formula(formula):
-        pairs = formulare.findall(formula)
+    def parse_elements(compound):
+        pairs = formulare.findall(compound)
         length = sum((len(p[0]) + len(p[1]) for p in pairs))
-        assert length == len(formula)
-        formula_dict = defaultdict(int)
+        assert length == len(compound)
+        compound_dict = defaultdict(int)
         for el, sub in pairs:
-            formula_dict[el] += float(sub) if sub else 1
-        return formula_dict
+            compound_dict[el] += float(sub) if sub else 1
+        return compound_dict
 
 
 
     for i in range(len(name)):
-        name[i] = [parse_formula(x) for x in name[i]]
+        name[i] = [parse_elements(x) for x in name[i]]
     
     
     i = -1
@@ -77,9 +79,9 @@ def Get_data(Data_input):
         s=-1
     
         ja=Valueinput[j]
-        for formula in name[j]:
+        for compound in name[j]:
             i +=1
-            hej=formula
+            hej=compound
             hej2=hej.keys()
             for k in hej2:
                 s +=1
@@ -100,7 +102,7 @@ def Get_data(Data_input):
         
     return X_data,Y_data
 
-
+"Push data thorugh the dataset class in pytorch"
 class Dataset(data.Dataset):
   
   def __init__(self, inputvector, labels):
@@ -121,14 +123,11 @@ class Dataset(data.Dataset):
       return X,Y
 
 
-
+"load the dataset into desired batchsizes"
 def loaddataset(Set,batchsize,shuff):
     return torch.utils.data.DataLoader(Set,batch_size=batchsize,shuffle=shuff)
 
-X_data=Get_data(test_data)[0]
-Y_data=Get_data(test_data)[1]
 
-#Test_set=Dataset(X_data,Y_data)
 
 
     
